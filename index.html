@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Makeup Store</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Welcome popup -->
+  <div class="welcome-popup" id="welcomePopup">
+    <div class="welcome-content">
+      <div class="welcome-text" id="welcomeMessage"></div>
+      <button class="welcome-btn" onclick="closeWelcome()">Let's Start!</button>
+    </div>
+  </div>
+
+  <div class="game-container">
+    <div class="header">
+      <div style="display:flex;flex-direction:column;gap:15px;">
+        <div style="display:flex;align-items:center;gap:20px;">
+          <h1>Makeup Store</h1>
+          <a href="https://google.com" target="_blank" rel="noopener noreferrer"
+             style="color:#4682B4;text-decoration:none;font-weight:bold;padding:8px 16px;border:2px solid #4682B4;border-radius:20px;transition:all 0.2s;"
+             onmouseover="this.style.background='#4682B4';this.style.color='white'"
+             onmouseout="this.style.background='transparent';this.style.color='#4682B4'">Google</a>
+        </div>
+        <div>
+          <input type="file" id="galleryInput" accept="image/*" style="display:none">
+          <button onclick="document.getElementById('galleryInput').click()"
+                  style="padding:8px 16px;border:0;border-radius:20px;background:#e67e22;color:white;font-weight:bold;cursor:pointer;">
+            Add Gallery Photo
+          </button>
+          <div id="galleryPreview" style="margin-top:10px;display:none;">
+            <img id="galleryImage" alt="Gallery preview"
+                 style="width:100px;height:80px;object-fit:cover;border-radius:10px;cursor:pointer;border:2px solid #e67e22;"
+                 onclick="openImageModal()">
+          </div>
+        </div>
+      </div>
+      <div class="zoom-controls">
+        <div class="zoom-row">
+          <button class="btn-zoom" id="zoomInBtn">Zoom In</button>
+          <span class="zoom-level" id="zoomLevel">100%</span>
+          <button class="btn-zoom" id="zoomOutBtn">Zoom Out</button>
+          <button class="btn-zoom btn-reset" id="resetBtn">Reset View</button>
+        </div>
+        <div class="zoom-row">
+          <label for="zoomInput" style="font-size:12px;"><strong>Zoom to:</strong></label>
+          <input type="number" class="zoom-input" id="zoomInput" min="50" max="1000" value="100">
+          <span style="font-size:12px;">%</span>
+          <button class="btn-apply" id="applyBtn">Apply</button>
+        </div>
+        <div class="zoom-row">
+          <label for="zoomStep" style="font-size:12px;"><strong>Button step:</strong></label>
+          <input type="range" id="zoomStep" min="10" max="50" value="25" style="width:80px;">
+          <span id="zoomStepVal" style="font-size:12px;">25%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="top-section">
+        <div class="model-container" id="modelContainer">
+          <div class="photo-upload">
+            <input type="file" id="photoInput" accept="image/*" capture="environment" />
+            <button class="btn-upload" onclick="document.getElementById('photoInput').click()">Upload Photo</button>
+          </div>
+
+          <div class="zoom-wrapper" id="zoomWrapper">
+            <div class="model" id="model">
+              <div class="white-stripe"></div>
+              <div class="ears">
+                <div class="ear left"></div>
+                <div class="ear right"></div>
+              </div>
+              <div class="eyes">
+                <div class="eye"><div class="pupil"></div></div>
+                <div class="eye"><div class="pupil"></div></div>
+              </div>
+              <div class="nose"></div>
+              <div class="mouth"></div>
+              <div class="tongue"></div>
+            </div>
+
+            <canvas id="paintLayer"></canvas>
+          </div>
+        </div>
+
+        <div class="styling-panel">
+          <div class="styling-category">
+            <div class="category-title">Brush Type</div>
+            <div class="controls">
+              <button class="btn brush-type-btn selected" data-brush="round" style="background:#3498db;color:#fff">● Round</button>
+              <button class="btn brush-type-btn" data-brush="square" style="background:#9b59b6;color:#fff">■ Square</button>
+              <button class="btn brush-type-btn" data-brush="star" style="background:#e67e22;color:#fff">★ Star</button>
+              <button class="btn brush-type-btn" data-brush="heart" style="background:#e91e63;color:#fff">♥ Heart</button>
+            </div>
+          </div>
+
+          <div class="styling-category">
+            <div class="category-title">Pick a Color</div>
+            <div class="color-palette">
+              <!-- Red family -->
+              <div class="color-option" style="background:#FF0000" data-color="#FF0000" title="Red"></div>
+              <div class="color-option" style="background:linear-gradient(45deg,#FF0000,#FF6B6B,#FF0000)" data-color="#FF3333" title="Sparkly Red"></div>
+              <div class="color-option" style="background:#8B0000" data-color="#8B0000" title="Dark Red"></div>
+              <!-- Orange family -->
+              <div class="color-option" style="background:#FF8000" data-color="#FF8000" title="Orange"></div>
+              <div class="color-option" style="background:linear-gradient(45deg,#FF8000,#FFB347,#FF8000)" data-color="#FFA500" title="Sparkly Orange"></div>
+              <div class="color-option" style="background:#CC5500" data-color="#CC5500" title="Dark Orange"></div>
+              <!-- Yellow family -->
+              <div class="color-option" style="background:#FFFF00" data-color="#FFFF00" title="Yellow"></div>
+              <div class="color-option" style="background:linear-gradient(45deg,#FFFF00,#FFFF99,#FFFF00)" data-color="#FFFF66" title="Sparkly Yellow"></div>
+              <div class="color-option" style="background:#B8860B" data-color="#B8860B" title="Dark Yellow"></div>
+              <!-- Green family -->
+              <div class="color-option" style="background:#00FF00" data-color="#00FF00" title="Green"></div>
+              <div class="color-option" style="background:linear-gradient(45deg,#00FF00,#90EE90,#00FF00)" data-color="#32CD32" title="Shimmery Green"></div>
+              <div class="color-option" style="background:#006400" data-color="#006400" title="Dark Green"></div>
+              <!-- Blue family -->
+              <div class="color-option" style="background:#0000FF" data-color="#0000FF" title="Blue"></div>
+              <div class="color-option" style="background:linear-gradient(45deg,#0000FF,#87CEEB,#0000FF)" data-color="#4169E1" title="Shimmery Blue"></div>
+              <div class="color-option" style="background:#000080" data-color="#000080" title="Dark Blue"></div>
+              <!-- Purple family -->
+              <div class="color-option" style="background:#8000FF" data-color="#8000FF" title="Purple"></div>
+              <div class="color-option" style="background:linear-gradient(45deg,#8000FF,#DDA0DD,#8000FF)" data-color="#9370DB" title="Shimmery Purple"></div>
+              <div class="color-option" style="background:#4B0082" data-color="#4B0082" title="Dark Purple"></div>
+              <!-- Black family -->
+              <div class="color-option" style="background:#000000" data-color="#000000" title="Black"></div>
+              <div class="color-option" style="background:linear-gradient(45deg,#000000,#4A4A4A,#000000)" data-color="#2F2F2F" title="Shimmery Black"></div>
+              <div class="color-option" style="background:#1C1C1C" data-color="#1C1C1C" title="Dark Black"></div>
+              <!-- Brown family -->
+              <div class="color-option" style="background:#8B4513" data-color="#8B4513" title="Brown"></div>
+              <div class="color-option" style="background:linear-gradient(45deg,#8B4513,#D2B48C,#8B4513)" data-color="#A0522D" title="Shimmery Brown"></div>
+              <div class="color-option" style="background:#5D4037" data-color="#5D4037" title="Dark Brown"></div>
+              <!-- White family -->
+              <div class="color-option" style="background:#FFFFFF;border:2px solid #ddd" data-color="#FFFFFF" title="White"></div>
+              <div class="color-option" style="background:linear-gradient(45deg,#FFFFFF,#F5F5F5,#FFFFFF);border:2px solid #ddd" data-color="#F8F8FF" title="Sparkly White"></div>
+              <!-- Gray family -->
+              <div class="color-option" style="background:#808080" data-color="#808080" title="Gray"></div>
+              <div class="color-option" style="background:linear-gradient(45deg,#808080,#C0C0C0,#808080)" data-color="#A9A9A9" title="Sparkly Gray"></div>
+              <div class="color-option" style="background:#404040" data-color="#404040" title="Dark Gray"></div>
+              <!-- Pink bonus -->
+              <div class="color-option" style="background:#FF69B4" data-color="#FF69B4" title="Hot Pink"></div>
+            </div>
+          </div>
+
+          <div class="styling-category">
+            <div class="category-title">Drawing Tools</div>
+            <div class="controls">
+              <button id="toggleDraw" class="btn btn-draw">Draw: OFF</button>
+              <button id="eraserBtn" class="btn btn-eraser">Eraser: OFF</button>
+              <button id="clearBtn" class="btn btn-clear">Clear Drawing</button>
+            </div>
+            <div class="controls brush-wrap">
+              <label for="brushSize" style="font-size:12px;"><strong>Brush size</strong></label>
+              <input id="brushSize" type="range" min="2" max="36" value="8" />
+              <span id="brushSizeVal" style="font-size:12px;">8</span> <span style="font-size:12px;">px</span>
+            </div>
+            <div class="hint">Upload photo → "Draw: ON" → pick color → draw! Use zoom for details!</div>
+          </div>
+
+          <div class="save-note">
+            <div class="save-note-title">💡 Save Your Artwork</div>
+            <div class="save-note-text">
+              Want to keep your creations? Take a screenshot of your finished makeup design!
+              <br><br>
+              <strong>How to screenshot:</strong><br>
+              • iPhone/iPad: Press Side + Volume Up<br>
+              • Android: Press Power + Volume Down<br>
+              • Computer: Print Screen key or Snipping Tool
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image zoom modal -->
+  <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+    <img class="modal-image" id="modalImage" alt="Uploaded preview" onclick="event.stopPropagation()">
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
